@@ -30,6 +30,6 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          if [[ ${{ github.event_name }} == "push" &&  ${{ github.ref_name }} == "main" ]]; then
-          mkdir testing
+          if [[ ${{ github.event_name }} == "pull_request" && github.event.pull_request.merged == true &&  ${{ github.ref_name }} == "main" ]]; then
+          mkdir testing.txt
           fi
