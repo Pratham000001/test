@@ -8,8 +8,11 @@ jobs:
   ecr-push:
     name: ecr-push
     runs-on: ubuntu-latest
-    uses: actions/checkout@v3
-    run: |
-      if [ ${{ github.event_name }} == "pull_request" &&  ${{ github.ref_name }} == "main" ]; then
-	 echo "Hellooooo main" >> hello.txt
-      fi
+    
+    steps:
+    - name: Checkout	
+      uses: actions/checkout@v3
+      run: |
+      	if [ ${{ github.event_name }} == "pull_request" &&  ${{ github.ref_name }} == "main" ]; then
+	   echo "Hellooooo main" >> hello.txt
+      	fi
