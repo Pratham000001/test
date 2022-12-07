@@ -31,5 +31,5 @@ jobs:
       - name: Run a multi-line script
         run: |
           if [[ ${{ github.event_name }} == "push" &&  ${{ github.ref_name }} == "main" ]]; then
-          echo "test, and deploy your project." >> hello.txt
+          mkdir testing
           fi
