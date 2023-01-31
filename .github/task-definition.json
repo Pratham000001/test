@@ -1,0 +1,346 @@
+{
+  "ipcMode": null,
+  "executionRoleArn": "arn:aws:iam::787367306168:role/AWSECSTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "dnsSearchDomains": null,
+      "environmentFiles": [
+        {
+          "value": "S3_ARN",
+          "type": "s3"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/Core-Backend",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "entryPoint": [],
+      "portMappings": [
+        {
+          "hostPort": 8081,
+          "protocol": "tcp",
+          "containerPort": 8081
+        }
+      ],
+      "command": [
+        "gunicorn",
+        "core_backend_service.wsgi:application",
+        "--bind",
+        "0.0.0.0:8081"
+      ],
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [],
+      "resourceRequirements": null,
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [{
+        "sourceVolume": "my-ebs-volume",
+          "containerPath": "/code/data"
+    }],
+      "workingDirectory": null,
+      "secrets": null,
+      "dockerSecurityOptions": null,
+      "memory": 1000,
+      "memoryReservation": 500,
+      "volumesFrom": [],
+      "stopTimeout": null,
+      "image": "public.ecr.aws/b5s3m6a6/core-backend:IMAGE_TAG",
+      "startTimeout": null,
+      "firelensConfiguration": null,
+      "dependsOn": [
+        {
+          "containerName": "Core-Backend-worker",
+          "condition": "START"
+        },
+        {
+          "containerName": "Core-Backend-beat",
+          "condition": "START"
+        },
+        {
+          "containerName": "Core-Backend-export_worker",
+          "condition": "START"
+        }
+      ],
+      "disableNetworking": null,
+      "interactive": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "pseudoTerminal": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": null,
+      "systemControls": null,
+      "privileged": null,
+      "name": "Core-Backend"
+    },
+    {
+      "dnsSearchDomains": null,
+      "environmentFiles": [
+        {
+          "value": "S3_ARN",
+          "type": "s3"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/Core-Backend",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "entryPoint": [],
+      "portMappings": [],
+      "command": [
+        "celery",
+        "-A",
+        "core_backend_service",
+        "worker",
+        "--loglevel=INFO",
+        "--concurrency=3"
+      ],
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [],
+      "resourceRequirements": null,
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [{
+        "sourceVolume": "my-ebs-volume",
+          "containerPath": "/code/data"
+    }],
+      "workingDirectory": null,
+      "secrets": null,
+      "dockerSecurityOptions": null,
+      "memory": 1000,
+      "memoryReservation": 500,
+      "volumesFrom": [],
+      "stopTimeout": null,
+      "image": "public.ecr.aws/b5s3m6a6/core-backend:IMAGE_TAG",
+      "startTimeout": null,
+      "firelensConfiguration": null,
+      "dependsOn": null,
+      "disableNetworking": null,
+      "interactive": null,
+      "healthCheck": null,
+      "essential": false,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "pseudoTerminal": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": null,
+      "systemControls": null,
+      "privileged": null,
+      "name": "Core-Backend-worker"
+    },
+    {
+      "dnsSearchDomains": null,
+      "environmentFiles": [
+        {
+          "value": "S3_ARN",
+          "type": "s3"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/Core-Backend",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "entryPoint": [],
+      "portMappings": [],
+      "command": [
+        "celery",
+        "-A",
+        "core_backend_service",
+        "beat",
+        "--loglevel=INFO"
+      ],
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [],
+      "resourceRequirements": null,
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [{
+        "sourceVolume": "my-ebs-volume",
+          "containerPath": "/code/data"
+    }],
+      "workingDirectory": null,
+      "secrets": null,
+      "dockerSecurityOptions": null,
+      "memory": 1000,
+      "memoryReservation": 500,
+      "volumesFrom": [],
+      "stopTimeout": null,
+      "image": "public.ecr.aws/b5s3m6a6/core-backend:IMAGE_TAG",
+      "startTimeout": null,
+      "firelensConfiguration": null,
+      "dependsOn": null,
+      "disableNetworking": null,
+      "interactive": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "pseudoTerminal": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": null,
+      "systemControls": null,
+      "privileged": null,
+      "name": "Core-Backend-beat"
+    },
+    {
+      "dnsSearchDomains": null,
+      "environmentFiles": [
+        {
+          "value": "S3_ARN",
+          "type": "s3"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "secretOptions": null,
+        "options": {
+          "awslogs-group": "/ecs/Core-Backend",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "entryPoint": [],
+      "portMappings": [],
+      "command": [
+        "celery",
+        "-A",
+        "core_backend_service",
+        "worker",
+        "--loglevel=INFO",
+        "--concurrency=3",
+        "-Q",
+        "export"
+      ],
+      "linuxParameters": null,
+      "cpu": 0,
+      "environment": [],
+      "resourceRequirements": null,
+      "ulimits": null,
+      "dnsServers": null,
+      "mountPoints": [{
+        "sourceVolume": "my-ebs-volume",
+          "containerPath": "/code/data"
+    }],
+      "workingDirectory": null,
+      "secrets": null,
+      "dockerSecurityOptions": null,
+      "memory": 1000,
+      "memoryReservation": 500,
+      "volumesFrom": [],
+      "stopTimeout": null,
+      "image": "public.ecr.aws/b5s3m6a6/core-backend:IMAGE_TAG",
+      "startTimeout": null,
+      "firelensConfiguration": null,
+      "dependsOn": null,
+      "disableNetworking": null,
+      "interactive": null,
+      "healthCheck": null,
+      "essential": true,
+      "links": null,
+      "hostname": null,
+      "extraHosts": null,
+      "pseudoTerminal": null,
+      "user": null,
+      "readonlyRootFilesystem": null,
+      "dockerLabels": null,
+      "systemControls": null,
+      "privileged": null,
+      "name": "Core-Backend-export_worker"
+    }
+  ],
+  "placementConstraints": [],
+  "memory": null,
+  "taskRoleArn": "arn:aws:iam::787367306168:role/AWSECSTaskExecutionRole",
+  "compatibilities": [
+    "EXTERNAL",
+    "EC2"
+  ],
+  "taskDefinitionArn": "arn:aws:ecs:ap-south-1:787367306168:task-definition/Core-Backend:28",
+  "family": "Core-Backend",
+  "requiresAttributes": [
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.execution-role-awslogs"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.env-files.s3"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.21"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "com.amazonaws.ecs.capability.task-iam-role"
+    },
+    {
+      "targetId": null,
+      "targetType": null,
+      "value": null,
+      "name": "ecs.capability.container-ordering"
+    }
+  ],
+  "pidMode": null,
+  "requiresCompatibilities": [
+    "EC2"
+  ],
+  "networkMode": "bridge",
+  "runtimePlatform": null,
+  "cpu": null,
+  "revision": 28,
+  "status": "ACTIVE",
+  "inferenceAccelerators": null,
+  "proxyConfiguration": null,
+  "volumes": [{
+    "name": "my-ebs-volume",
+    "host": {
+      "sourcePath": "/DATA01/export/"}
+      }]
+
+}
