@@ -30,13 +30,12 @@ jobs:
       - name: Set environment variable
         env:
           IMAGE_TAG: "prod"
-        run: echo ${{ env.IMAGE_TAG }}
+        run: sed -i "s/IMAGE_TAG/${{env.IMAGE_TAG}}/g" .github/task-definition.json
 
       - name: Set S3 arn 
         env: 
           S3_ARN: "arnkcndkncs:cksdbcjkn"
         run: |
-          sed -i "s/IMAGE_TAG/${{env.IMAGE_TAG}}/g" .github/task-definition.json
           sed -i "s/S3_ARN/${{env.S3_ARN}}/g" .github/task-definition.json
 
         
