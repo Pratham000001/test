@@ -1,0 +1,19 @@
+
+name: push
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+
+
+jobs:
+  # This workflow contains a single job called "build"
+  blank:
+    name: blank
+    uses: ./.github/workflows/blank.yml
+    with:
+      S3_ARN: arn:aws:s3:::ecs-enviroment-file/az1/core-backend.env
+      ENVIRONMENT: production
+
