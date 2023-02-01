@@ -36,7 +36,7 @@ jobs:
         env: 
           S3_ARN: arn:aws:s3:::ecs-enviroment-file/az1/core-backend.env
         run: |
-          sed -i "s/S3_ARN/${{env.S3_ARN}}/g" .github/task-definition.json
+          sed -i "s|S3_ARN|${{env.S3_ARN}}|g" .github/task-definition.json
 
         
 
