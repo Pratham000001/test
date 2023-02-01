@@ -32,7 +32,7 @@ jobs:
       
       - name: Update task 
         run: | 
-          sed -i "s|IMAGE_TAG|${{inputs.IMAGE_TAG}}|g" .github/task-definition.json
+          sed -i "s|IMAGE_TAG|${{inputs.ENVIRONMENT}}|g" .github/task-definition.json
           sed -i "s|S3_ARN|${{inputs.S3_ARN}}|g" .github/task-definition.json
 
 
