@@ -5,11 +5,14 @@ name: CI
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "main" ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ENVIRONMENT:
+        required: true
+        type: string
+      S3_ARN:
+        required: true
+        type: string
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -27,18 +30,11 @@ jobs:
       - name: Run a one-line script
         run: echo Hello, world!
       
-      - name: Set environment variable
-        env:
-          IMAGE_TAG: "prod"
-        run: sed -i "s/IMAGE_TAG/${{env.IMAGE_TAG}}/g" .github/task-definition.json
+      - name: Update task 
+        run: | 
+          sed -i "s|IMAGE_TAG|${{inputs.IMAGE_TAG}}|g" .github/task-definition.json
+          sed -i "s|S3_ARN|${{inputs.S3_ARN}}|g" .github/task-definition.json
 
-      - name: Set S3 arn 
-        env: 
-          S3_ARN: arn:aws:s3:::ecs-enviroment-file/az1/core-backend.env
-        run: |
-          sed -i "s|S3_ARN|${{env.S3_ARN}}|g" .github/task-definition.json
-
-        
 
       - name: Print task definition 
         run: |
