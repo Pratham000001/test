@@ -31,7 +31,16 @@ jobs:
         run: echo Hello, world!
       
       - name: Update task 
+        if: ${{ vars.AZ1 }} == 'true' || ${{ vars.AZ3 }} == 'true'
         run: | 
+          echo "INside az1 and az3"
+          sed -i "s|IMAGE_TAG|${{inputs.ENVIRONMENT}}|g" .github/task-definition.json
+          sed -i "s|S3_ARN|${{inputs.S3_ARN}}|g" .github/task-definition.json
+
+      - name: Update task 
+        if: ${{ vars.AZ4 }} == 'true'
+        run: | 
+          echo "INside az4"
           sed -i "s|IMAGE_TAG|${{inputs.ENVIRONMENT}}|g" .github/task-definition.json
           sed -i "s|S3_ARN|${{inputs.S3_ARN}}|g" .github/task-definition.json
 
