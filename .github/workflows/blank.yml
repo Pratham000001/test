@@ -39,7 +39,7 @@ jobs:
           sed -i "s|S3_ARN|${{inputs.S3_ARN}}|g" .github/task-definition.json
 
       - name: Update task 
-        if: ${{ secretsAZ4 }} == 'true'
+        if: ${{ secrets.AZ4 }} == 'true'
         run: | 
           echo "INside az4"
           echo ${{ env.AZ1_AZ4 }}
