@@ -53,18 +53,18 @@ jobs:
 
 
       - name: Update task
-        if: ${{ inputs.DEPLOYMENT_ENVIRONMENT }} == "AZ1"
+        if: ${{ inputs.DEPLOYMENT_ENVIRONMENT }} == AZ1
         run: |
           AWS_REGION=ap-south-1
-          echo ${{env.AWS_REGION}}
+          echo $AWS_REGION
           sed -i "s|IMAGE_TAG|${{inputs.ENVIRONMENT}}|g" .github/task-definition.json
           sed -i "s|S3_ARN|${{inputs.S3_ARN}}|g" .github/task-definition.json
 
       - name: Update task
-        if: ${{ inputs.DEPLOYMENT_ENVIRONMENT }} == "AZ4"
+        if: ${{ inputs.DEPLOYMENT_ENVIRONMENT }} == AZ4
         run: | 
           AWS_REGION=me-central-1
-          echo $ {{env.AWS_REGION}}
+          echo $AWS_REGION
           sed -i "s|IMAGE_TAG|${{inputs.ENVIRONMENT}}|g" .github/task-definition.json
           sed -i "s|S3_ARN|${{inputs.S3_ARN}}|g" .github/task-definition.json
 
