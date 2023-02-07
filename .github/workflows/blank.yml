@@ -49,6 +49,7 @@ jobs:
           else
             AWS_REGION=ap-south-1
           fi
+          echo "AWS_REGION=$AWS_REGION"
 
 
       - name: Update task
