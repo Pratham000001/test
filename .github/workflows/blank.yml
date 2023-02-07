@@ -34,7 +34,7 @@ jobs:
         env: 
           AZ1: ${{ vars.AZ1 }}
           AZ3: ${{ vars.AZ3 }}
-        if: env.AZ1 == 'true'  || env.AZ3 == 'true' 
+        if: env.AZ1 == 'true'
         run: | 
           echo "INside az1 and az3 $AZ1"
           echo $AZ3
