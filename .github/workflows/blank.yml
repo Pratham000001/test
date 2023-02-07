@@ -30,8 +30,8 @@ jobs:
       - name: Run a one-line script
         env: 
           AZ1: ${{ secrets.AZ1 }}
-          AZ3: ${{ vars.AZ3 }}
-          AZ4: ${{ vars.AZ4 }}
+          AZ3: ${{ secrets.AZ3 }}
+          AZ4: ${{ secrets.AZ4 }}
         run: | 
           echo Hello, world!
           echo ${{env.AZ3}}
@@ -40,8 +40,8 @@ jobs:
 
       - name: Update task 
         env: 
-          AZ1: ${{ vars.AZ1 }}
-          AZ3: ${{ vars.AZ3 }}
+          AZ1: ${{ secrets.AZ1 }}
+          AZ3: ${{ secrets.AZ3 }}
         if: env.AZ1 == 'true'
         run: | 
           echo "INside az1 and az3 $AZ1"
@@ -51,7 +51,7 @@ jobs:
 
       - name: Update task 
         env: 
-          AZ4: ${{ vars.AZ4 }}
+          AZ4: ${{ secrets.AZ4 }}
         if: env.AZ4 == 'true'
         run: | 
           echo "INside az4"
