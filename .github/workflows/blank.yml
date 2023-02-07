@@ -34,7 +34,7 @@ jobs:
         env: 
           AZ1: ${{ secrets.AZ1 }}
           AZ3: ${{ secrets.AZ3 }}
-        if: $AZ1 == 'true'  || $AZ3 == 'true' 
+        if: env.AZ1 == 'true'  || env.AZ3 == 'true' 
         run: | 
           echo "INside az1 and az3 $AZ1"
           echo $AZ3
@@ -44,7 +44,7 @@ jobs:
       - name: Update task 
         env: 
           AZ4: ${{ secrets.AZ4 }}
-        if: $AZ4 == 'true'
+        if: env.AZ4 == 'true'
         run: | 
           echo "INside az4"
           echo $AZ4
