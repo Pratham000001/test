@@ -48,6 +48,7 @@ jobs:
             AWS_REGION=me-central-1
           else
             AWS_REGION=ap-south-1
+          fi
 
 
       - name: Update task
