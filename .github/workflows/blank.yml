@@ -28,8 +28,16 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo Hello, world!
-      
+        env: 
+          AZ1: ${{ vars.AZ1 }}
+          AZ3: ${{ vars.AZ3 }}
+          AZ4: ${{ vars.AZ4 }}
+        run: | 
+          echo Hello, world!
+          echo $AZ3
+          echo $AZ1
+          echo $AZ4
+
       - name: Update task 
         env: 
           AZ1: ${{ vars.AZ1 }}
