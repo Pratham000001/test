@@ -14,6 +14,11 @@ on:
         required: true
         type: string
 
+env: 
+  AZ1: ${{ secrets.AZ1 }}
+  AZ3: ${{ secrets.AZ3 }}
+  AZ4: ${{ secrets.AZ4 }}
+          
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -28,20 +33,13 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        env: 
-          AZ1: ${{ secrets.AZ1 }}
-          AZ3: ${{ secrets.AZ3 }}
-          AZ4: ${{ secrets.AZ4 }}
         run: | 
           echo Hello, world!
           echo ${{env.AZ3}}
           echo ${{env.AZ1}}
           echo ${{env.AZ4}}
 
-      - name: Update task 
-        env: 
-          AZ1: ${{ secrets.AZ1 }}
-          AZ3: ${{ secrets.AZ3 }}
+      - name: Update task
         if: env.AZ1 == 'true'
         run: | 
           echo "INside az1 and az3 $AZ1"
@@ -49,9 +47,7 @@ jobs:
           sed -i "s|IMAGE_TAG|${{inputs.ENVIRONMENT}}|g" .github/task-definition.json
           sed -i "s|S3_ARN|${{inputs.S3_ARN}}|g" .github/task-definition.json
 
-      - name: Update task 
-        env: 
-          AZ4: ${{ secrets.AZ4 }}
+      - name: Update task
         if: env.AZ4 == 'true'
         run: | 
           echo "INside az4"
