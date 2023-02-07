@@ -44,7 +44,11 @@ jobs:
 
       - name: Set AWS region
         run: |
-          echo "::set-env name=AWS_REGION::${{ env.DEPLOYMENT_ENVIRONMENT == 'AZ4' ? 'me-central-1' : 'ap-south-1' }}"
+          if [ "${{ env.DEPLOYMENT_ENVIRONMENT }}" == "AZ4" ]; then
+            echo "::set-env name=AWS_REGION::me-central-1"
+          else
+            echo "::set-env name=AWS_REGION::ap-south-1"
+          fi
 
 
       - name: Update task
