@@ -16,4 +16,5 @@ jobs:
     with:
       S3_ARN: arn:aws:s3:::ecs-enviroment-file/az1/core-backend.env
       ENVIRONMENT: production
+      DEPLOYMENT_ENVIRONMENT: AZ4
 

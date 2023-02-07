@@ -7,6 +7,9 @@ on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   workflow_call:
     inputs:
+      DEPLOYMENT_ENVIRONMENT: 
+        required: true
+        type: string
       ENVIRONMENT:
         required: true
         type: string
@@ -39,19 +42,23 @@ jobs:
           echo env.AZ1
           echo env.AZ4
 
+      - name: Set AWS region
+        run: |
+          echo "::set-env name=AWS_REGION::${{ env.DEPLOYMENT_ENVIRONMENT == 'AZ4' ? 'me-central-1' : 'ap-south-1' }}"
+
+
       - name: Update task
-        if: env.AZ1 == 'true'
-        run: | 
-          echo "INside az1 and az3 $AZ1"
-          echo $AZ3
+        if: env.AWS_REGION == 'ap-south-1'
+        run: |
+          echo env.AWS_REGION
           sed -i "s|IMAGE_TAG|${{inputs.ENVIRONMENT}}|g" .github/task-definition.json
           sed -i "s|S3_ARN|${{inputs.S3_ARN}}|g" .github/task-definition.json
 
       - name: Update task
-        if: env.AZ4 == 'true'
+        if: env.AWS_REGION == 'me-central-1'
         run: | 
           echo "INside az4"
-          echo $AZ4
+          echo env.AWS_REGION
           sed -i "s|IMAGE_TAG|${{inputs.ENVIRONMENT}}|g" .github/task-definition.json
           sed -i "s|S3_ARN|${{inputs.S3_ARN}}|g" .github/task-definition.json
 
