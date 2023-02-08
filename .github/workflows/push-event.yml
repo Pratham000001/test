@@ -16,5 +16,5 @@ jobs:
     with:
       S3_ARN: arn:aws:s3:::ecs-enviroment-file/az1/core-backend.env
       ENVIRONMENT: production
-      AWS_REGION: ap-south-1
+      DEPLOYMENT_ENVIRONMENT: ap-south-1
 
