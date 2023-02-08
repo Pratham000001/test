@@ -38,9 +38,9 @@ jobs:
       - name: Run a one-line script
         run: | 
           echo Hello, world!
-          echo env.AZ3
-          echo env.AZ1
-          echo env.AZ4
+          echo ${{ secrets.AZ4 }}
+          echo ${{ vars.AZ3 }}
+          echo${{ secrets.AZ1 }}
 
       - name: Set AWS region
         run: |
