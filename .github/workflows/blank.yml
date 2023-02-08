@@ -17,10 +17,10 @@ on:
         required: true
         type: string
 
-# env: 
-#   AZ1: ${{ secrets.AZ1 }}
-#   AZ3: ${{ secrets.AZ3 }}
-#   AZ4: ${{ secrets.AZ4 }}
+env: 
+  AZ1: ${{ secrets.AZ1 }}
+  AZ3: ${{ vars.AZ3 }}
+  AZ4: ${{ secrets.AZ4 }}
           
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -39,7 +39,7 @@ jobs:
         run: | 
           echo Hello, world!
           echo ${{ secrets.AZ4 }}
-          echo ${{ vars.AZ3 }}
+          echo ${{ env.AZ3 }}
           echo ${{ secrets.AZ1 }}
 
       - name: Set AWS region
