@@ -3,7 +3,7 @@ name: Create release
 on:
   push:
     branches:
-      - 'release*'
+      - 'release-candidate'
 
 jobs:
   create-release:
