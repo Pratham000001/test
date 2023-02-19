@@ -1,0 +1,6 @@
+name-template: 'Release core-backend-service v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+template: |
+  ## What's Changed
+  $CHANGES
+  **Full Changelog**: https://github.com/Survey2Connect/core-backend-service/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION

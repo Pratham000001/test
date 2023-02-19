@@ -1,0 +1,48 @@
+name: Create release
+
+on:
+  push:
+    branches:
+      - 'release**'
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Get Version Number
+      id: version_number
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.PAT }}
+        script: |
+          const { data } = await github.repos.getLatestRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
+          const version = data.tag_name;
+          const parts = version.split('.');
+          parts[parts.length - 1] = parseInt(parts[parts.length - 1], 10) + 1;
+          parts[0] = parts[0].slice(1);
+          const newVersion = parts.join('.');
+          console.log(`::set-output name=version::v${newVersion}`);
+    - name: Create Release Notes
+      id: create_release_notes
+      uses: release-drafter/release-drafter@v5
+      env:
+        GITHUB_TOKEN: ${{ secrets.PAT }}
+      with:
+        version-resolver: "v${{ steps.version_number.outputs.version }}"
+
+    - name: Create Pull Request
+      id: create_pull_request
+      uses: thomaseizinger/create-pull-request@master
+      with:
+        GITHUB_TOKEN: ${{ secrets.PAT }}
+        title: "Release core-backend-service v${{ steps.version_number.outputs.version }}"
+        head: ${{ github.ref }}
+        base: production
+        body: ${{ steps.create_release_notes.outputs.body }}
