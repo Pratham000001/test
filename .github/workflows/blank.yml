@@ -39,8 +39,8 @@ jobs:
         run: | 
           echo Hello, world!
           echo ${{ vars.AZ3_AWS_REGION }}
-          echo ${{ vars.AZ1_AWS_REGION }}
-          echo ${{ secrets.AZ1_AZ1 }}
+          echo ${{ vars.AZ3_AWS_REGION }}
+         # echo ${{ secrets.AZ1_AZ1 }}
 
       - name: Set AWS region
         run: |
