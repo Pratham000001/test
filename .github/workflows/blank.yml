@@ -7,6 +7,9 @@ on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   workflow_call:
     inputs:
+      DEPLOYMENT_ENVIRONMENT: 
+        required: true
+        type: string
       ENVIRONMENT:
         required: true
         type: string
@@ -14,6 +17,10 @@ on:
         required: true
         type: string
 
+env: 
+  AWS_REGION_AZ1: ${{ secrets.AWS_REGION_AZ1 }}
+  AWS_REGION_AZ3: ${{ secrets.AWS_REGION_AZ3 }}
+          
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -28,19 +35,34 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
-        run: echo Hello, world!
-      
-      - name: Update task 
-        if: ${{ vars.AZ1_AZ1 }} == 'true' || ${{ vars.AZ1_AZ3 }} == 'true'
         run: | 
-          echo "INside az1 and az3 ${{ vars.AZ1 }}"
+          echo Hello, world!
+          echo ${{ env.AZ1.AWS_REGION }}
+          echo ${{ env.AZ3.AWS_REGION }}
+       
+      - name: Set AWS region
+        run: |
+          if [ ${{ inputs.DEPLOYMENT_ENVIRONMENT }} == 'AZ4' ]; then
+            AWS_REGION=me-central-1
+          else
+            AWS_REGION=ap-south-1
+          fi
+          echo "AWS_REGION=$AWS_REGION"
+
+
+      - name: Update task
+        if:  ${{ inputs.DEPLOYMENT_ENVIRONMENT }} == 'AZ4'
+        run: |
+          AWS_REGION=ap-south-1
+          echo $AWS_REGION
           sed -i "s|IMAGE_TAG|${{inputs.ENVIRONMENT}}|g" .github/task-definition.json
           sed -i "s|S3_ARN|${{inputs.S3_ARN}}|g" .github/task-definition.json
 
-      - name: Update task 
-        if: ${{ vars.AZ1_AZ4 }} == 'true'
+      - name: Update task
+        if: ${{ inputs.DEPLOYMENT_ENVIRONMENT }} == 'AZ4'
         run: | 
-          echo "INside az4 ${{ vars.AZ4 }}"
+          AWS_REGION=me-central-1
+          echo $AWS_REGION
           sed -i "s|IMAGE_TAG|${{inputs.ENVIRONMENT}}|g" .github/task-definition.json
           sed -i "s|S3_ARN|${{inputs.S3_ARN}}|g" .github/task-definition.json
 
