@@ -15,7 +15,8 @@ jobs:
       - name: Update manifest file
         run: |
           branch_name="update-image-tag-${{github.run_id}} "
-          shaa=$(curl https://google.com/${branch_name})
+          echo "$branch_name"
+          shaa=$(curl https://google.com/"$branch_name")
   # This workflow contains a single job called "build"
   # blank:
   #   name: blank
