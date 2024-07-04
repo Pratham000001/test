@@ -4,6 +4,21 @@ on:
   push:
     branches:
       - 'release**'
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        description: 'Choose environment'
+        required: true
+        type: choice
+        options:
+          - pit
+          - prod
+          - kcb_beta
+          - najm_beta
+      RELEASE_NAME:
+        description: 'Release name'
+        required: true
+        type: string
 
 jobs:
   create-release:
