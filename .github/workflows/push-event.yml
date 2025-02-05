@@ -46,9 +46,11 @@ jobs:
 
   blank:
     name: blank
+    env:
+      BRANCH_NAME: ${{ needs.test.outputs.branch_name }}
     uses: ./.github/workflows/blank.yml
     with:
       S3_ARN: arn:aws:s3:::ecs-enviroment-file/az1/core-backend.env
       ENVIRONMENT: production
       DEPLOYMENT_ENVIRONMENT: ap-south-1
-      BRANCH_NAME: ${{ steps.get_branch.outputs.branch }}
+      # BRANCH_NAME: ${{ steps.get_branch.outputs.branch }}
