@@ -13,6 +13,9 @@ on:
       ENVIRONMENT:
         required: true
         type: string
+      BRANCH_NAME:
+        required: true
+        type: string
       S3_ARN:
         required: true
         type: string
@@ -37,6 +40,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: | 
+          echo ${{ inputs.BRANCH_NAME }}
           echo Hello, world!
           echo ${{ secrets.AZ4 }}
           echo ${{ env.AZ3 }}

@@ -35,11 +35,12 @@ jobs:
           echo "$branch_name"
           shaa=$(curl https://google.com/"$branch_name")
   # This workflow contains a single job called "build"
-  # blank:
-  #   name: blank
-  #   uses: ./.github/workflows/blank.yml
-  #   with:
-  #     S3_ARN: arn:aws:s3:::ecs-enviroment-file/az1/core-backend.env
-  #     ENVIRONMENT: production
-  #     DEPLOYMENT_ENVIRONMENT: ap-south-1
+  blank:
+    name: blank
+    uses: ./.github/workflows/blank.yml
+    with:
+      S3_ARN: arn:aws:s3:::ecs-enviroment-file/az1/core-backend.env
+      ENVIRONMENT: production
+      DEPLOYMENT_ENVIRONMENT: ap-south-1
+      BRANCH_NAME: ${{ github.ref }}
 
