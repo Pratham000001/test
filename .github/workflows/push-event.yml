@@ -1,15 +1,10 @@
-
 name: push
 
-# Controls when the workflow will run
 on:
   release:
     types:
       - released
       - prereleased
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  # push:
-  #   branches: [ "main" ]
   workflow_dispatch:
     inputs:
       ENVIRONMENT:
@@ -26,33 +21,29 @@ on:
         required: true
         type: string
 
-
 jobs:
-  test: 
-    if: github.ref == 'refs/heads/release'
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Update manifest file
-        run: |
-          echo "${{github.ref}}"
-          branch_name="update-image-tag-${{github.run_id}} "
-          echo "$branch_name"
-          shaa=$(curl https://google.com/"$branch_name")
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Important: Fetch all history
 
       - name: Get Branch Name
         id: get_branch
         run: |
-          SHA="${{ github.sha }}" # Use github.sha for the release commit
-          BRANCH=$(git branch --contains "$SHA" | grep -v '\*' | tr -d ' ') # Find the branch
-          echo "::set-output name=branch::$BRANCH" # Set the output variable
+          SHA="${{ github.sha }}"
+          BRANCH=$(git branch --contains "$SHA" | grep -v '\*' | tr -d ' ')
+          echo "::set-output name=branch::$BRANCH"
 
       - name: Use Branch Name
         run: |
           echo "Branch Name: ${{ steps.get_branch.outputs.branch }}"
-          branch_name="update-image-tag-${{ github.run_id }}-${{ steps.get_branch.outputs.branch }}" # Include branch name in your tag
+          branch_name="update-image-tag-${{ github.run_id }}-${{ steps.get_branch.outputs.branch }}"
           echo "$branch_name"
-          
-  # This workflow contains a single job called "build"
+          shaa=$(curl https://google.com/"$branch_name") # Assuming this URL is relevant to your use case
+          echo "SHA from curl: $shaa" # Echo the result for debugging
+
   blank:
     name: blank
     uses: ./.github/workflows/blank.yml
@@ -61,4 +52,3 @@ jobs:
       ENVIRONMENT: production
       DEPLOYMENT_ENVIRONMENT: ap-south-1
       BRANCH_NAME: ${{ steps.get_branch.outputs.branch }}
-
