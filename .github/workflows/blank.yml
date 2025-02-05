@@ -42,6 +42,7 @@ jobs:
       - name: Run a one-line script
         run: | 
           echo $github.head_ref
+          echo ${{ github.event.release.target_commitish }}
           echo ${{ inputs.BRANCH_NAME }}
           echo Hello, world!
           echo ${{ secrets.AZ4 }}

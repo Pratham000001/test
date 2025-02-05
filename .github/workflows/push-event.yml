@@ -54,4 +54,4 @@ jobs:
       S3_ARN: arn:aws:s3:::ecs-enviroment-file/az1/core-backend.env
       ENVIRONMENT: production
       DEPLOYMENT_ENVIRONMENT: ap-south-1
-      BRANCH_NAME: $BRANCH
+      BRANCH_NAME: ${{ github.event.release.target_commitish }}
