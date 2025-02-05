@@ -25,7 +25,7 @@ on:
 
 jobs:
   test: 
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/release'
     runs-on: ubuntu-latest
     steps:
       - name: Update manifest file
