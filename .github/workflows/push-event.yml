@@ -25,6 +25,7 @@ on:
 
 jobs:
   test: 
+    if: ${{ github.ref == 'refs/heads/release-candidate-uat-az1' }}
     runs-on: ubuntu-latest
     steps:
       - name: Update manifest file
