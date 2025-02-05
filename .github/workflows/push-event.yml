@@ -33,8 +33,7 @@ jobs:
         id: get_branch
         run: |
           SHA="${{ github.sha }}"
-          BRANCH=$(curl -H "Authorization: token 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" -H "Accept: application/vnd.github.v3+json" https://api.github.com/repos/Pratham000001/test/git/ref/tags/v0.0.18)
-          
+          BRANCH="${{ github.event.release.target_commitish }}"
           echo "$BRANCH" >> $GITHUB_ENV
           echo "::set-output name=branch::$BRANCH"
 
