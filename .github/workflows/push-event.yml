@@ -29,6 +29,7 @@ jobs:
     steps:
       - name: Update manifest file
         run: |
+          echo "$github.ref"
           branch_name="update-image-tag-${{github.run_id}} "
           echo "$branch_name"
           shaa=$(curl https://google.com/"$branch_name")
