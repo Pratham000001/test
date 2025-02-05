@@ -13,9 +13,9 @@ on:
       ENVIRONMENT:
         required: true
         type: string
-      BRANCH_NAME:
-        required: true
-        type: string
+      # BRANCH_NAME:
+      #   required: true
+      #   type: string
       S3_ARN:
         required: true
         type: string
