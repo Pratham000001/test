@@ -41,7 +41,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: | 
-          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+          echo "$github.head_ref"
           echo ${{ inputs.BRANCH_NAME }}
           echo Hello, world!
           echo ${{ secrets.AZ4 }}
