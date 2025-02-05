@@ -46,7 +46,15 @@ jobs:
       S3_ARN: arn:aws:s3:::ecs-enviroment-file/az1/core-backend.env
       ENVIRONMENT: production
       DEPLOYMENT_ENVIRONMENT: ap-south-1
-      BRANCH_NAME: ${{ fromJson('["' + github.ref + '"]')[0].split('/')[2] }}
+      BRANCH_NAME: ${{ github.ref }}
+    steps:
+      - name: Set branch name
+        id: set_branch
+        run: |
+          # Extract the branch name from github.ref (e.g., 'refs/heads/main' -> 'main')
+          branch_name="${GITHUB_REF##*/}"
+          echo "Branch name extracted: $branch_name"
+          echo "BRANCH_NAME=$branch_name" >> $GITHUB_ENV
 
 
 
