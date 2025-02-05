@@ -38,6 +38,20 @@ jobs:
           branch_name="update-image-tag-${{github.run_id}} "
           echo "$branch_name"
           shaa=$(curl https://google.com/"$branch_name")
+
+      - name: Get Branch Name
+        id: get_branch
+        run: |
+          SHA="${{ github.sha }}" # Use github.sha for the release commit
+          BRANCH=$(git branch --contains "$SHA" | grep -v '\*' | tr -d ' ') # Find the branch
+          echo "::set-output name=branch::$BRANCH" # Set the output variable
+
+      - name: Use Branch Name
+        run: |
+          echo "Branch Name: ${{ steps.get_branch.outputs.branch }}"
+          branch_name="update-image-tag-${{ github.run_id }}-${{ steps.get_branch.outputs.branch }}" # Include branch name in your tag
+          echo "$branch_name"
+          
   # This workflow contains a single job called "build"
   blank:
     name: blank
@@ -46,15 +60,5 @@ jobs:
       S3_ARN: arn:aws:s3:::ecs-enviroment-file/az1/core-backend.env
       ENVIRONMENT: production
       DEPLOYMENT_ENVIRONMENT: ap-south-1
-      BRANCH_NAME: ${{ github.ref }}
-    steps:
-      - name: Set branch name
-        id: set_branch
-        run: |
-          # Extract the branch name from github.ref (e.g., 'refs/heads/main' -> 'main')
-          branch_name="${GITHUB_REF##*/}"
-          echo "Branch name extracted: $branch_name"
-          echo "BRANCH_NAME=$branch_name" >> $GITHUB_ENV
-
-
+      BRANCH_NAME: ${{ steps.get_branch.outputs.branch }}
 
