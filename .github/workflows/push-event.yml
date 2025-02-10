@@ -1,20 +1,57 @@
-
 name: push
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
-  push:
-    branches: [ "test" ]
-
+  release:
+    types:
+      - released
+      - prereleased
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        description: 'Choose environment'
+        required: true
+        type: choice
+        options:
+          - pit
+          - prod
+          - kcb_beta
+          - najm_beta
+      RELEASE_NAME:
+        description: 'Release name'
+        required: true
+        type: string
 
 jobs:
-  # This workflow contains a single job called "build"
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Important: Fetch all history
+
+      - name: Get Branch Name
+        id: get_branch
+        run: |
+          SHA="${{ github.sha }}"
+          BRANCH="${{ github.event.release.target_commitish }}"
+          echo "$BRANCH" >> $GITHUB_ENV
+          echo "::set-output name=branch::$BRANCH"
+
+      - name: Use Branch Name
+        run: |
+          echo "Branch Name: ${{ steps.get_branch.outputs.branch }}"
+          branch_name="update-image-tag-${{ github.run_id }}-${{ steps.get_branch.outputs.branch }}"
+          echo "$branch_name"
+          shaa=$(curl https://google.com/"$branch_name") # Assuming this URL is relevant to your use case
+          echo "SHA from curl: $shaa" # Echo the result for debugging
+
   blank:
     name: blank
+    # env:
+    #   BRANCH_NAME: ${{ needs.test.outputs.branch_name }}
     uses: ./.github/workflows/blank.yml
     with:
       S3_ARN: arn:aws:s3:::ecs-enviroment-file/az1/core-backend.env
       ENVIRONMENT: production
       DEPLOYMENT_ENVIRONMENT: ap-south-1
-
+      BRANCH_NAME: ${{ github.event.release.target_commitish }}

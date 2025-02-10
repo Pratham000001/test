@@ -13,6 +13,9 @@ on:
       ENVIRONMENT:
         required: true
         type: string
+      BRANCH_NAME:
+        required: true
+        type: string
       S3_ARN:
         required: true
         type: string
@@ -27,6 +30,7 @@ jobs:
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
+    # if: ${{ inputs.BRANCH_NAME == 'refs/heads/main' }}
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -37,6 +41,12 @@ jobs:
       # Runs a single command using the runners shell
       - name: Run a one-line script
         run: | 
+          echo $github.head_ref
+          echo ${{ github.event.release.target_commitish }}
+          BRANCH="${{ github.event.release.target_commitish }}"
+          echo "$BRANCH" >> $GITHUB_ENV
+          echo "::set-output name=branch::$BRANCH"
+          echo ${{ inputs.BRANCH_NAME }}
           echo Hello, world!
           echo ${{ secrets.AZ4 }}
           echo ${{ env.AZ3 }}
