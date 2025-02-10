@@ -5,7 +5,7 @@ on:
     branches:
       - 'main*'
       - 'release*'
-      - 'production*' 
+      - 'production*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name }}
@@ -21,7 +21,9 @@ jobs:
 
       - name: Get today's date
         id: date
-        run: echo "today=$(date +'%d%m%Y')" >> $GITHUB_ENV
+        run: |
+          echo "today=$(date +'%d%m%Y')" >> $GITHUB_ENV
+          echo "today=$today" > .env-vars  # Create .env-vars file and write the date
 
       - name: Fetch all tags
         run: git fetch --tags
@@ -29,7 +31,6 @@ jobs:
       - name: Determine the latest tag
         id: tag
         run: |
-          
           if [[ "${{ github.ref_name }}" == release* || "${{ github.ref_name }}" == main* ]]; then
             LATEST_TAG=$(git tag --list "v${{ env.today }}-rc.*" --sort=-v:refname | head -n 1)
             echo "branch=${{ github.ref_name }}" >> $GITHUB_ENV
@@ -42,7 +43,6 @@ jobs:
             echo "branch=${{ github.ref_name }}" >> $GITHUB_ENV
             LATEST_TAG=$(git tag --list "v${{ env.today }}.*" --sort=-v:refname | head -n 1)
             if [[ -z "$LATEST_TAG" ]]; then
-              
               NEW_TAG="v${{ env.today }}.1"
             else
               NEW_TAG=$(echo "$LATEST_TAG" | awk -F. -v OFS=. '{$NF++; print}')
@@ -62,13 +62,12 @@ jobs:
           elif [[ "${{ github.ref_name }}" == production* ]]; then
             echo "release_type=release" >> $GITHUB_ENV
             echo "tag_suffix=" >> $GITHUB_ENV  # No suffix for full release
-          fi
-      
+
       - name: Save environment variable as artifact
         uses: actions/upload-artifact@v4
         with:
           name: env-vars
-          path: .env-vars 
+          path: .env-vars  # Now this file exists and will be uploaded
 
       - name: Create Release
         id: create_release
