@@ -52,7 +52,13 @@ jobs:
           if [[ -z "$LATEST_TAG" ]]; then
             NEW_TAG="v${{ env.today }}-${RELEASE_TYPE}.1${ENVIRONMENT}"
           else
-            NEW_TAG=$(echo "$LATEST_TAG" | awk -F. -v OFS=. '{$NF++; print}')
+            BASE_TAG=$(echo "$LATEST_TAG" | sed 's/\([0-9]*\)$/\1/')
+            VERSION_PART=$(echo "$LATEST_TAG" | sed 's/.*-\([0-9]\+\)$/\1/')
+            INCREMENTED_VERSION=$(($VERSION_PART + 1))
+      
+      # Increment the version number and keep the environment part intact
+            NEW_TAG="${BASE_TAG}-${RELEASE_TYPE}.${INCREMENTED_VERSION}${ENVIRONMENT}"
+
           fi
 
           echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
