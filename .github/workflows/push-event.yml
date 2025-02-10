@@ -35,7 +35,10 @@ jobs:
           SHA="${{ github.sha }}"
           COMMIT_HASH=${{ github.sha }}
           echo "Commit Hash: $COMMIT_HASH"
-          BRANCH_NAME=$(git branch --contains $COMMIT_HASH | grep -v 'HEAD' | sed 's/.*\(release-candidate\|production\)/\1/')
+          git fetch --all
+
+          # Get the branch name(s) that contains the commit
+          BRANCH_NAME=$(git branch -r --contains $COMMIT_HASH | sed 's/origin\///' | grep -E 'release-candidate|production')
           echo "$BRANCH_NAME"
           BRANCH="${{ github.event.release.target_commitish }}"
           echo "$BRANCH" >> $GITHUB_ENV
