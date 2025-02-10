@@ -3,8 +3,9 @@ name: Create Release
 on:
   push:
     branches:
+      - 'main*'
       - 'release*'
-      - 'production*'
+      - 'production*' 
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name }}
@@ -56,7 +57,7 @@ jobs:
 
           echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
           echo "release_type=${RELEASE_TYPE}" >> $GITHUB_ENV
-
+      
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
