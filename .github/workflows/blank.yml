@@ -43,6 +43,9 @@ jobs:
         run: | 
           echo $github.head_ref
           echo ${{ github.event.release.target_commitish }}
+          BRANCH="${{ github.event.release.target_commitish }}"
+          echo "$BRANCH" >> $GITHUB_ENV
+          echo "::set-output name=branch::$BRANCH"
           echo ${{ inputs.BRANCH_NAME }}
           echo Hello, world!
           echo ${{ secrets.AZ4 }}

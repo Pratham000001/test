@@ -1,63 +1,72 @@
-name: Create release
+name: Create Release
 
 on:
   push:
     branches:
-      - 'release**'
-  workflow_dispatch:
-    inputs:
-      ENVIRONMENT:
-        description: 'Choose environment'
-        required: true
-        type: choice
-        options:
-          - pit
-          - prod
-          - kcb_beta
-          - najm_beta
-      RELEASE_NAME:
-        description: 'Release name'
-        required: true
-        type: string
+      - 'main*'
+      - 'release*'
+      - 'production*'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name }}
+  cancel-in-progress: true
 
 jobs:
   create-release:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Get Version Number
-      id: version_number
-      uses: actions/github-script@v4
-      with:
-        github-token: ${{ secrets.PAT }}
-        script: |
-          const { data } = await github.repos.getLatestRelease({
-            owner: context.repo.owner,
-            repo: context.repo.repo
-          });
-          const version = data.tag_name;
-          const parts = version.split('.');
-          parts[parts.length - 1] = parseInt(parts[parts.length - 1], 10) + 1;
-          parts[0] = parts[0].slice(1);
-          const newVersion = parts.join('.');
-          console.log(`::set-output name=version::v${newVersion}`);
-    - name: Create Release Notes
-      id: create_release_notes
-      uses: release-drafter/release-drafter@v5
-      env:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
-      with:
-        version-resolver: "v${{ steps.version_number.outputs.version }}"
+      - name: Get today's date
+        id: date
+        run: echo "today=$(date +'%d%m%Y')" >> $GITHUB_ENV
 
-    - name: Create Pull Request
-      id: create_pull_request
-      uses: thomaseizinger/create-pull-request@master
-      with:
-        GITHUB_TOKEN: ${{ secrets.PAT }}
-        title: "Release core-backend-service v${{ steps.version_number.outputs.version }}"
-        head: ${{ github.ref }}
-        base: production
-        body: ${{ steps.create_release_notes.outputs.body }}
+      - name: Fetch all tags
+        run: git fetch --tags
+
+      - name: Determine the latest tag
+        id: tag
+        run: |
+          if [[ "${{ github.ref_name }}" == release* ]]; then
+            LATEST_TAG=$(git tag --list "v${{ env.today }}-rc.*" --sort=-v:refname | head -n 1)
+            if [[ -z "$LATEST_TAG" ]]; then
+              NEW_TAG="v${{ env.today }}-rc.1"
+            else
+              NEW_TAG=$(echo "$LATEST_TAG" | awk -F. -v OFS=. '{$NF++; print}')
+            fi
+          elif [[ "${{ github.ref_name }}" == production* ]]; then
+            LATEST_TAG=$(git tag --list "v${{ env.today }}.*" --sort=-v:refname | head -n 1)
+            if [[ -z "$LATEST_TAG" ]]; then
+              NEW_TAG="v${{ env.today }}.1"
+            else
+              NEW_TAG=$(echo "$LATEST_TAG" | awk -F. -v OFS=. '{$NF++; print}')
+            fi
+          else
+            echo "Not on a branch that requires tagging"
+            exit 0
+          fi
+          echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
+
+      - name: Set release type and tag suffix
+        id: set_release_type
+        run: |
+          if [[ "${{ github.ref_name }}" == release* ]]; then
+            echo "release_type=pre-release" >> $GITHUB_ENV
+            echo "tag_suffix=-rc" >> $GITHUB_ENV
+          elif [[ "${{ github.ref_name }}" == production* ]]; then
+            echo "release_type=release" >> $GITHUB_ENV
+            echo "tag_suffix=" >> $GITHUB_ENV  # No suffix for full release
+          fi
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.new_tag }}
+          release_name: ${{ steps.tag.outputs.new_tag }}
+          draft: false
+          prerelease: ${{ env.release_type == 'pre-release' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
