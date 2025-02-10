@@ -5,7 +5,7 @@ on:
     branches:
       - 'main*'
       - 'release*'
-      - 'production*' 
+      - 'production*'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name }}
@@ -52,12 +52,20 @@ jobs:
           if [[ -z "$LATEST_TAG" ]]; then
             NEW_TAG="v${{ env.today }}-${RELEASE_TYPE}.1${ENVIRONMENT}"
           else
-            NEW_TAG=$(echo "$LATEST_TAG" | awk -F. -v OFS=. '{$NF++; print}')
+            # Extract the base version (e.g., v10022025-rc)
+            BASE_TAG=$(echo "$LATEST_TAG" | sed -E 's/^(v[0-9]+-[a-z]*)(.*)$/\1/') # Modified regex
+            # Extract the numeric part of the version (e.g., 1 in v10022025-rc.1-az1)
+            VERSION_PART=$(echo "$LATEST_TAG" | sed -E 's/.*\.([0-9]+)(-[a-z0-9]+)?$/\1/') # Modified regex, handles missing env suffix
+            # Increment the version number
+            INCREMENTED_VERSION=$((VERSION_PART + 1)) # Use $((...)) for arithmetic expansion
+
+            # Reconstruct the tag with the incremented version
+            NEW_TAG="${BASE_TAG}.${INCREMENTED_VERSION}${ENVIRONMENT}"
           fi
 
           echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
           echo "release_type=${RELEASE_TYPE}" >> $GITHUB_ENV
-      
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
