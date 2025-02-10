@@ -1,0 +1,57 @@
+name: Release cut automation
+
+on:
+  schedule:
+    - cron: "46 11 * * 0,3"  # Runs on Monday and Wednesday at 11AM UTC
+
+jobs:
+  release-cut-automation:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Get Version Number
+      id: version_number
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.PAT }}
+        script: |
+          const { data } = await github.repos.getLatestRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
+          const version = data.tag_name;
+          const parts = version.split('.');
+          parts[parts.length - 1] = parseInt(parts[parts.length - 1], 10) + 1;
+          parts[0] = parts[0].slice(1);
+          const newVersion = parts.join('.');
+          console.log(`::set-output name=version::v${newVersion}`);
+    # Find the last merged PR with the title containing "Pre-release core-backend-service vX.Y.Z build N"
+    - name: Find last merged PR
+      id: find_pr
+      uses: peter-evans/find-last-merged-pr@v1
+      with:
+        search: 'Pre-release core-backend-service ${{ steps.version_number.outputs.version }} build'
+        pattern: '.*build\s+(\d+).*'
+
+    # Check if a matching PR was found, and set the build number output if so
+    - name: Check for matching PR
+      if: steps.find_pr.outputs.matches != ''
+      run: echo "::set-output name=build::$(( ${{ steps.find_pr.outputs.matches[1] }} + 1 ))"
+
+    # Set a default build number output if no matching PR was found
+    - name: Set default build number
+      if: steps.find_pr.outputs.matches == ''
+      run: echo "::set-output name=build::1"
+
+    - name: Create Pull Request
+      id: create_pull_request
+      uses: thomaseizinger/create-pull-request@master
+      with:
+        GITHUB_TOKEN: ${{ secrets.PAT }}
+        title: "Pre-release core-backend-service v${{ steps.version_number.outputs.version }} build ${{ steps.version_number.outputs.build }}"
+        head: main
+        base: release-candidate
+        body: ${{ steps.create_release_notes.outputs.body }}
