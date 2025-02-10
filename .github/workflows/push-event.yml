@@ -33,6 +33,10 @@ jobs:
         id: get_branch
         run: |
           SHA="${{ github.sha }}"
+          COMMIT_HASH=${{ github.sha }}
+          echo "Commit Hash: $COMMIT_HASH"
+          BRANCH_NAME=$(git branch --contains $COMMIT_HASH | grep -v 'HEAD' | sed 's/.*\(release-candidate\|production\)/\1/')
+          echo "$BRANCH_NAME"
           BRANCH="${{ github.event.release.target_commitish }}"
           echo "$BRANCH" >> $GITHUB_ENV
           echo "::set-output name=branch::$BRANCH"

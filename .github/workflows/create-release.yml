@@ -21,9 +21,7 @@ jobs:
 
       - name: Get today's date
         id: date
-        run: |
-          echo "today=$(date +'%d%m%Y')" >> $GITHUB_ENV
-          echo "today=$today" > .env-vars
+        run: echo "today=$(date +'%d%m%Y')" >> $GITHUB_ENV
 
       - name: Fetch all tags
         run: git fetch --tags
