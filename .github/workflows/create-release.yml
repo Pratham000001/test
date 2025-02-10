@@ -56,14 +56,13 @@ jobs:
             VERSION_PART=$(echo "$LATEST_TAG" | sed 's/.*-\([0-9]\+\)$/\1/')
             INCREMENTED_VERSION=$(($VERSION_PART + 1))
       
-      # Increment the version number and keep the environment part intact
+            # Increment the version number and keep the environment part intact
             NEW_TAG="${BASE_TAG}-${RELEASE_TYPE}.${INCREMENTED_VERSION}${ENVIRONMENT}"
-
           fi
 
           echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
           echo "release_type=${RELEASE_TYPE}" >> $GITHUB_ENV
-      
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
