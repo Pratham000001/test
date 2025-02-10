@@ -58,6 +58,7 @@ jobs:
       
       # Increment the version number and keep the environment part intact
             NEW_TAG="${BASE_TAG}-${RELEASE_TYPE}.${INCREMENTED_VERSION}${ENVIRONMENT}"
+
           fi
 
           echo "new_tag=$NEW_TAG" >> $GITHUB_OUTPUT
