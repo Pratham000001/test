@@ -29,6 +29,14 @@ jobs:
         with:
           fetch-depth: 0 # Important: Fetch all history
 
+      - name: Setup Middleware Repository
+        uses: actions/checkout@v3
+        with:
+          repository: Survey2Connect/common-frontend-service
+          ref: ${{ github.event_name == 'release' && github.event.release.prerelease == true && (contains(github.event.release.name, '-az1') && 'refs/heads/release-candidate-uat-az1' || contains(github.event.release.name, '-az2') && 'refs/heads/release-candidate' || 'refs/heads/production') || 'refs/heads/production' }}
+        token: ${{ secrets.PAT }}
+        path: src/common-frontend-service
+
       - name: Get Branch Name
         id: get_branch
         run: |
